@@ -1,62 +1,70 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <script>    
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelector('#new-task').onsubmit = () => {
-                const inputbox = document.createElement('input');
-                inputbox.type="checkbox";//inputbox.serAtribbute("type","checkbox")
-                const button = document.createElement('button'); 
-                button.innerText = 'x';
-                button.className = "delete";
-                const li = document.createElement('li');
-                li.appendChild(inputbox);
-                li.innerHTML+=document.querySelector('#task').value;
-                document.querySelector('#tasks').append(li);
-                li.appendChild(button);
-                
-                const checkbox = li.querySelector('input[type=checkbox]');
-                checkbox.addEventListener('change', (event) => {
-                if (event.currentTarget.checked) {
+    <script>
+        function AddTask(){
+            const ol=document.querySelector('#tasks');
+            const li=document.createElement('li');
+            const cb=document.createElement('input');
+            cb.setAttribute("type","checkbox");
+            cb.setAttribute("onchange","CheckTask(this)");
+            const del=document.createElement('button');
+            del.innerText="x";
+            del.setAttribute("onclick","DeleteTask(this)");
+            
+            li.appendChild(cb);
+            li.innerHTML+=document.querySelector('#task').value;
+            li.appendChild(del);
+            ol.append(li);
+            
+            document.querySelector('#task').value='';
+        }
+        function DeleteTask(button){
+            li=button.parentNode;
+            li.parentNode.removeChild(li);
+        }
+        function CheckTask(cb){
+            li=cb.parentNode;
+            if (cb.checked) {
                     li.style= "text-decoration:line-through";
                 } else {
                     li.style= "text-decoration:none";
                 }
-                });
-                
-                const delbutton = li.querySelector('button.delete');
-                delbutton.addEventListener('click',()=>{
-                    const ul=document.querySelector('#tasks')
-                    ul.removeChild(li);
-                    
-                });
-                document.querySelector('#task').value='';
-                return false;
-            };
-            document.querySelector('#complete-all').addEventListener('click',()=>{
-                const ul=document.getElementsByTagName('li');
-                for(var i=0;i<ul.length;i++){
-                    ul[i].style="text-decoration:line-through";
+        }
+        function CompleteAll(){
+            const lis=document.getElementsByTagName('li');
+            for(var i=0;i<lis.length;i++){
+                    lis[i].style="text-decoration:line-through";
+                    lis[i].firstChild.checked=true;
                 }  
-            });
-        });
-        
+        }   
+        function DeleteAll(){
+            const lis=document.getElementsByTagName('li');
+            const ol=document.querySelector("#tasks");
+            for(var i=lis.length-1;i>=0;i--){
+                    ol.removeChild(lis[i]);
+                }  
+        }   
     </script>
 </head>
 <body>
     <p>Computer Science</p>
     <h1>Tasks</h1>
     
-    <form id="new-task" action="">
+    <div id="new-task">
         <input type="text" id="task" autocomplete="off" autofocus placeholder="New Task">
-        <input type="submit" value="Add Todo"><br>
-    </form>
-    <button id="complete-all">
+        <input type="submit" onclick="AddTask()" value="Add Todo"><br>
+    </div>
+    <br>
+    <button id="complete-all" onclick="CompleteAll()">
         Complete All
+    </button>
+    <button id="delete-all" onclick="DeleteAll()">
+        Delete All
     </button>
     <ol id="tasks">
     </ol>
